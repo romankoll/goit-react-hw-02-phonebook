@@ -1,5 +1,7 @@
-// import { nanoid } from 'nanoid';
+import { nanoid } from 'nanoid';
 import { Component } from 'react';
+
+import Filter from './Filter/Filter';
 
 class App extends Component {
   state = {
@@ -11,6 +13,7 @@ class App extends Component {
     ],
     name: '',
     number: '',
+    filter: '',
   };
 
   handleInputChange = event => {
@@ -21,12 +24,12 @@ class App extends Component {
     });
   };
 
-  // addNewItem = newItem => {
-  //   this.setState(prewState => ({
-  //     // const { contacts } = this.state;
-  //     this.state.contacts:[...prewState.contacts, newItem];
-  //   });)
-  // };
+  addNewItem = newItem => {
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newItem],
+    }));
+  };
+
   // handleInputChange = event => {
   //   this.setState({
   //     name: event.target.value,
@@ -41,12 +44,20 @@ class App extends Component {
   handleFormSubmit = event => {
     event.preventDefault();
 
-    // this.setState(()=>{
-    //   this.state.contacts:[...this.state.contacts,]
+    const { name, number } = this.state;
+    const newItem = {
+      id: nanoid(),
+      name,
+      number,
+    };
 
-    // })
-    console.log(this.state);
+    this.addNewItem(newItem);
   };
+
+  chengeFilter = e => {
+    this.setState({ filter: e.currentTarget.value });
+  };
+
   render() {
     // const phoneBookItem = {
     //   name: '',
@@ -57,8 +68,16 @@ class App extends Component {
       contacts,
       name,
       number,
+      filter,
       //   id
     } = this.state;
+
+    const normalizedFilter = this.state.filter.toLowerCase();
+
+    const filterContacts = this.state.contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+
     return (
       <div>
         <h1>Phonebook</h1>
@@ -93,8 +112,13 @@ class App extends Component {
           </button> */}
         </form>
         <h2>Contacts</h2>
+        <Filter value={filter} onChange={this.chengeFilter} />
         <ul>
-          {contacts.map(contact => (
+          {/* <label htmlFor="">
+            Find contacts by name
+            <input type="text" value={filter} onChange={this.chengeFilter} />
+          </label> */}
+          {filterContacts.map(contact => (
             <li key={contact.id}>
               {contact.name}: {contact.number}
             </li>
