@@ -2,6 +2,8 @@ import { nanoid } from 'nanoid';
 import { Component } from 'react';
 
 import Filter from './Filter/Filter';
+import ContactList from './Contactlist/ContactList';
+import ContactForm from './ContactForm/ContactForm';
 
 class App extends Component {
   state = {
@@ -30,6 +32,11 @@ class App extends Component {
     }));
   };
 
+  deleteItem = contactId => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== contactId),
+    }));
+  };
   // handleInputChange = event => {
   //   this.setState({
   //     name: event.target.value,
@@ -65,7 +72,7 @@ class App extends Component {
     //   id: nanoid(),
     // };
     const {
-      contacts,
+      // contacts,
       name,
       number,
       filter,
@@ -81,6 +88,7 @@ class App extends Component {
     return (
       <div>
         <h1>Phonebook</h1>
+        <ContactForm />
         <form action="" onSubmit={this.handleFormSubmit}>
           Name
           <label>
@@ -111,19 +119,11 @@ class App extends Component {
           {/* Add contact
           </button> */}
         </form>
-        <h2>Contacts</h2>
         <Filter value={filter} onChange={this.chengeFilter} />
-        <ul>
-          {/* <label htmlFor="">
-            Find contacts by name
-            <input type="text" value={filter} onChange={this.chengeFilter} />
-          </label> */}
-          {filterContacts.map(contact => (
-            <li key={contact.id}>
-              {contact.name}: {contact.number}
-            </li>
-          ))}
-        </ul>
+        <ContactList
+          contacts={filterContacts}
+          onDeleteContact={this.deleteItem}
+        />
       </div>
     );
   }
